@@ -133,19 +133,20 @@ public class EmployeeRepositoryJdbc implements EmployeeRepository {
 	@Override
 	public Employee select(String username)
 	{
+		System.out.println("in repository, contacting DB now." + username);
 		try (Connection connection = ConnectionUtil.getConnection())
 		{
 			final String command = "SELECT U.U_ID, U.U_FIRSTNAME, U.U_LASTNAME, U.U_USERNAME, U.U_PASSWORD, U.U_EMAIL, U.UR_ID, UR.UR_TYPE FROM USER_T U INNER JOIN USER_ROLE UR ON U.UR_ID = UR.UR_ID WHERE U.U_USERNAME = ?";
 			PreparedStatement statement = connection.prepareStatement(command);
-
-			statement.setString(1, username);
+			logger.trace("inside try");
+			statement.setString(1, username.toUpperCase());
 
 			ResultSet resultSet = statement.executeQuery();
-
+			logger.trace("query sent");
 			while (resultSet.next())
 			{
 				Employee employee = new Employee();
-
+				logger.trace("inside while");
 				employee.setId(resultSet.getInt("U_ID"));
 				employee.setFirstName(resultSet.getString("U_FIRSTNAME"));
 				employee.setLastName(resultSet.getString("U_LASTNAME"));
@@ -156,10 +157,11 @@ public class EmployeeRepositoryJdbc implements EmployeeRepository {
 
 				return employee;
 			}
+			logger.trace("while skipped");
 		}
 		catch (SQLException e)
 		{
-			logger.error("Specified Employee not found (username)", e);
+			logger.error("Specified Employee not found (username)" + username, e);
 		}
 		return new Employee();
 	}
@@ -204,13 +206,13 @@ public class EmployeeRepositoryJdbc implements EmployeeRepository {
 		try(Connection connection = ConnectionUtil.getConnection()) {
 
 			int statementIndex = 0;
-
+			logger.trace(employee.getPassword());
 			String command = "SELECT GET_HASH(?) AS HASH FROM DUAL";
 
 			PreparedStatement statement = connection.prepareStatement(command);
 
 			statement.setString(++statementIndex, employee.getPassword());
-
+			logger.trace(employee.getPassword());
 			ResultSet result = statement.executeQuery();
 
 

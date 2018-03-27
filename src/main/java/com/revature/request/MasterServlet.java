@@ -21,6 +21,17 @@ public class MasterServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1159764852861289598L;
 
+	
+	@Override
+	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	    System.out.println("contacted server." + request.getQueryString());
+		response.setHeader("Access-Control-Allow-Origin", "http://localhost:4200");
+	    response.setHeader("Access-Control-Allow-Methods", "GET, PUT, POST, OPTIONS, DELETE");
+	    response.setHeader("Access-Control-Allow-Credentials", "true");
+	    super.service(request, response);
+	}
+	
+	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		Object data = RequestHelper.getRequestHelper().process(request);

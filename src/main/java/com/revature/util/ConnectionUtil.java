@@ -12,6 +12,12 @@ public class ConnectionUtil {
 	private static Logger logger = Logger.getLogger(ConnectionUtil.class);
 
 	public static Connection getConnection() throws SQLException{
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+		} catch (ClassNotFoundException e)
+		{
+			logger.error("class not found for driver");
+		}
 		String url = "jdbc:oracle:thin:@revaturebankdb.cxcscohikus1.us-east-2.rds.amazonaws.com:1521:ORCL";
 		String username = "REIMBURSEMENT_DB";
 		String password = "p4ssw0rd";

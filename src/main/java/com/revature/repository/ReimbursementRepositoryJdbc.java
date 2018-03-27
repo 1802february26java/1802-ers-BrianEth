@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -34,17 +35,25 @@ public class ReimbursementRepositoryJdbc implements ReimbursementRepository {
 
 	private static Logger logger = Logger.getLogger(ReimbursementRepositoryJdbc.class);
 
+	private static ReimbursementRepositoryJdbc repository = new ReimbursementRepositoryJdbc();
+	
+	private ReimbursementRepositoryJdbc() {}
+	
+	public static ReimbursementRepositoryJdbc getInstance(){
+		return repository;
+	}
+	
 	@Override
 	public boolean insert(Reimbursement reimbursement) {
 		try(Connection connection = ConnectionUtil.getConnection()) {
 			int statementIndex = 0;
-			String command = "INSERT INTO REIMBURSEMENT VALUES(NULL,?,?,?,?,NULL,?,?,?,?)";
+			String command = "INSERT INTO REIMBURSEMENT VALUES(NULL,?,NULL,?,?,NULL,?,?,?,?)";
 
 			PreparedStatement statement = connection.prepareStatement(command);
 
 			//Set attributes to be inserted
-			statement.setTimestamp(++statementIndex, Timestamp.valueOf(reimbursement.getRequested()));
-			statement.setTimestamp(++statementIndex, Timestamp.valueOf(reimbursement.getResolved()));
+			statement.setTimestamp(++statementIndex, Timestamp.valueOf(LocalDateTime.now()));
+			//statement.setTimestamp(++statementIndex, Timestamp.valueOf(reimbursement.getResolved()));
 			statement.setDouble(++statementIndex, reimbursement.getAmount());
 			statement.setString(++statementIndex, reimbursement.getDescription());
 			//statement.setBlob(++statementIndex, (Blob)reimbursement.getReceipt());
@@ -67,7 +76,7 @@ public class ReimbursementRepositoryJdbc implements ReimbursementRepository {
 		try(Connection connection = ConnectionUtil.getConnection()){
 			int statementIndex = 0;
 
-			String command="UPDATE REIMBURSEMENT SET MANAGER_ID = ?, RS_ID = ?   WHERE R_ID = ?";
+			String command="UPDATE REIMBURSEMENT SET R_RESOLVED = ?, MANAGER_ID = ?, RS_ID = ?   WHERE R_ID = ?";
 
 			logger.trace("getting statement object in update account");
 
@@ -79,7 +88,7 @@ public class ReimbursementRepositoryJdbc implements ReimbursementRepository {
 			//statement.setString(++statementIndex, reimbursement.getDescription());
 			//statement.setBlob(++statementIndex, (Blob)reimbursement.getReceipt());
 			//statement.setInt(++statementIndex, reimbursement.getRequester().getId());
-
+			statement.setTimestamp(++statementIndex, Timestamp.valueOf(LocalDateTime.now()));
 			//change to get logged user id.
 			statement.setInt(++statementIndex, reimbursement.getApprover().getId());
 
