@@ -38,6 +38,8 @@ public class LoginControllerAlpha implements LoginController {
 		request.getSession().setAttribute("loggedUser",logged);
 		System.out.println("logged in");
 		logger.trace(logged.toString());
+		logger.trace(request.getSession().getAttribute(("loggedUser")));
+		logger.trace(request.getSession());
 		return logged;
 	}
 

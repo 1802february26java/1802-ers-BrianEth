@@ -1,6 +1,9 @@
 package com.revature.request;
 
 import java.io.IOException;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -24,13 +27,29 @@ public class MasterServlet extends HttpServlet {
 	
 	@Override
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	    System.out.println("contacted server." + request.getQueryString());
+	    System.out.println("contacted server:" + request.getQueryString());
 		response.setHeader("Access-Control-Allow-Origin", "http://localhost:4200");
 	    response.setHeader("Access-Control-Allow-Methods", "GET, PUT, POST, OPTIONS, DELETE");
 	    response.setHeader("Access-Control-Allow-Credentials", "true");
+	    response.setHeader("Access-Control-Allow-Headers", "JSESSIONID"); 
+	   // getHeadersInfo(request);
 	    super.service(request, response);
 	}
 	
+	 private Map<String, String> getHeadersInfo(HttpServletRequest request) {
+
+	        Map<String, String> map = new HashMap<String, String>();
+
+	        Enumeration headerNames = request.getHeaderNames();
+	        while (headerNames.hasMoreElements()) {
+	            String key = (String) headerNames.nextElement();
+	            String value = request.getHeader(key);
+	            map.put(key, value);
+	            System.out.println("key: " + key + ": " + value);
+	        }
+
+	        return map;
+	    }
 	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {

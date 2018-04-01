@@ -68,16 +68,19 @@ public class EmployeeRepositoryJdbc implements EmployeeRepository {
 	{
 		try (Connection connection = ConnectionUtil.getConnection())
 		{
-			final String command = "UPDATE USER_T SET U_FIRSTNAME = ?, U_LASTNAME = ? , U_PASSWORD = ?, U_EMAIL = ?, UR_ID = ? WHERE U_ID =  ?";
+			logger.trace("Repo: email: " + employee.getEmail());
+			final String command = "UPDATE USER_T SET U_FIRSTNAME = ?, U_LASTNAME = ? , U_EMAIL = ? WHERE U_ID =  ?";
 			PreparedStatement statement = connection.prepareStatement(command);
 			int statementIndex = 0;
 
 			statement.setString(++statementIndex, employee.getFirstName().toUpperCase());
 			statement.setString(++statementIndex, employee.getLastName().toUpperCase());
-			statement.setString(++statementIndex, employee.getPassword());
+			//dont update password via profile
+			//statement.setString(++statementIndex, employee.getPassword());
 			statement.setString(++statementIndex, employee.getEmail().toLowerCase());
-			statement.setInt(++statementIndex, employee.getEmployeeRole().getId());
 			statement.setInt(++statementIndex, employee.getId());
+			//user ID shouldnt change...?
+			//statement.setInt(++statementIndex, employee.getId());
 
 			if ( statement.executeUpdate() != 0 )
 			{

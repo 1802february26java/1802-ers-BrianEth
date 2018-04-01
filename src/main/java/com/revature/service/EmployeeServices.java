@@ -48,7 +48,7 @@ public class EmployeeServices implements EmployeeService {
 	@Override
 	public Employee getEmployeeInformation(Employee employee) {
 		
-		
+		//maybe get by username?
 		return repository.select(employee.getId());
 	}
 

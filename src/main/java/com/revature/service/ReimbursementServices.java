@@ -2,22 +2,43 @@ package com.revature.service;
 
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 import com.revature.model.Employee;
 import com.revature.model.Reimbursement;
 import com.revature.model.ReimbursementType;
+import com.revature.repository.EmployeeRepositoryJdbc;
 import com.revature.repository.ReimbursementRepository;
 import com.revature.repository.ReimbursementRepositoryJdbc;
 
 public class ReimbursementServices implements ReimbursementService {
 
-	ReimbursementRepository repository = ReimbursementRepositoryJdbc.getInstance();
+	private ReimbursementRepository repository = ReimbursementRepositoryJdbc.getInstance();
+	
+
+	private static final Logger logger = Logger.getLogger(ReimbursementServices.class);
+	
+	private static ReimbursementService service = new ReimbursementServices();
+	
+	private ReimbursementServices() {
+		
+	}
+	
+	
+	public static ReimbursementService getInstance() {
+		return service;
+	}
+	
 	
 	@Override
 	public boolean submitRequest(Reimbursement reimbursement) {
 		// TODO Auto-generated method stub
+		logger.trace("service layer: submit request");
 		return repository.insert(reimbursement);
 	}
 
+	
+	//approve/deny request
 	@Override
 	public boolean finalizeRequest(Reimbursement reimbursement) {
 		// TODO Auto-generated method stub
@@ -32,7 +53,6 @@ public class ReimbursementServices implements ReimbursementService {
 
 	@Override
 	public Set<Reimbursement> getUserPendingRequests(Employee employee) {
-		// TODO Auto-generated method stub
 		return repository.selectPending(employee.getId());
 	}
 
