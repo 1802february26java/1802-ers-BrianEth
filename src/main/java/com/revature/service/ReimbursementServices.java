@@ -42,7 +42,7 @@ public class ReimbursementServices implements ReimbursementService {
 	@Override
 	public boolean finalizeRequest(Reimbursement reimbursement) {
 		// TODO Auto-generated method stub
-		return false;
+		return repository.update(reimbursement);
 	}
 
 	@Override

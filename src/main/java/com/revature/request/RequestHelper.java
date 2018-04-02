@@ -56,6 +56,9 @@ public class RequestHelper {
 		case "/ERS/submitReimbursement.do":
 			logger.trace("HELPER: submit reimbursement.");
 			return new ReimbursementControllerAlpha().submitRequest(request);
+		case "/ERS/finalize.do":
+			logger.trace("helper: finalize reimbursement.");
+			return new ReimbursementControllerAlpha().finalizeRequest(request);
 		//TODO: make functional, see controllers??
 		case "/ERS/info.do":
 			logger.trace("info");
@@ -64,6 +67,12 @@ public class RequestHelper {
 			//TODO: test route
 			logger.trace("Helper: updating info");
 			return new EmployeeInformationControllerAlpha().updateEmployee(request);
+		case "/ERS/allEmployees.do":
+			logger.trace("helper: all employees");
+			return new EmployeeInformationControllerAlpha().viewAllEmployees(request);
+		case "/ERS/register.do":
+			logger.trace("Helper: registering");
+			return new EmployeeInformationControllerAlpha().registerEmployee(request);
 		case "/ERS/debugReimbursement.do":
 			return new ReimbursementControllerAlpha().singleRequest(request);
 		case "/ERS/resolvedReimbursement.do":

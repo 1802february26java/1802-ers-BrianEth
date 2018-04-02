@@ -67,6 +67,7 @@ public class ReimbursementControllerAlpha implements ReimbursementController {
 	public Object multipleRequests(HttpServletRequest request) {
 		// TODO request.param("requestType") to decide which type to get?
 		Employee loggedUser = (Employee) request.getSession().getAttribute("loggedUser");
+		Employee searchUser;
 		if (request.getParameter("requestType").equals("pending")){
 			logger.trace("requesting pending reimbursements");
 			return service.getUserPendingRequests(loggedUser);
@@ -79,7 +80,19 @@ public class ReimbursementControllerAlpha implements ReimbursementController {
 		} else if (request.getParameter("requestType").equals("allResolved")) {
 			logger.trace("requesting ALL resolved reimbursements");
 			return service.getAllResolvedRequests();
-		} else {
+		} else if (request.getParameter("requestType").equals("searchPending")) {
+			searchUser=new Employee(
+					Integer.parseInt(request.getParameter("id")),
+					null,null,null,null,null,null);
+			logger.trace("searching pending");
+			return service.getUserPendingRequests(searchUser);
+		} else if (request.getParameter("requestType").equals("searchFinalized")) {
+			searchUser=new Employee(
+					Integer.parseInt(request.getParameter("id")),
+					null,null,null,null,null,null);
+			logger.trace("searching finalized");
+			return service.getUserFinalizedRequests(searchUser);
+		}else {
 			//select request by user ?
 		return null;
 		}
@@ -87,8 +100,17 @@ public class ReimbursementControllerAlpha implements ReimbursementController {
 
 	@Override
 	public Object finalizeRequest(HttpServletRequest request) {
-		// TODO Auto-generated method stub
-		return null;
+		Reimbursement reimbursement = service.getSingleRequest(
+						new Reimbursement(
+								Integer.parseInt(request.getParameter("id")),
+								null, null, 0.0, "", null, null, null, null));
+		reimbursement.setApprover((Employee)request.getSession()
+				.getAttribute("loggedUser"));
+		reimbursement.setStatus(new ReimbursementStatus(
+							Integer.parseInt(request.getParameter("statusNum")),
+									request.getParameter("status")));
+		logger.trace("controller updated reimbursement: " + reimbursement);
+		return service.finalizeRequest(reimbursement);
 	}
 
 	@Override

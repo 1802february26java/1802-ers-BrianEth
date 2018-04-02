@@ -82,26 +82,19 @@ public class ReimbursementRepositoryJdbc implements ReimbursementRepository {
 			logger.trace("getting statement object in update account");
 
 			PreparedStatement statement = connection.prepareStatement(command);
-			//Set attributes to be inserted
-			//statement.setTimestamp(++statementIndex, Timestamp.valueOf(reimbursement.getRequested()));
-			//statement.setTimestamp(++statementIndex, Timestamp.valueOf(reimbursement.getResolved()));
-			//statement.setDouble(++statementIndex, reimbursement.getAmount());
-			//statement.setString(++statementIndex, reimbursement.getDescription());
-			//statement.setBlob(++statementIndex, (Blob)reimbursement.getReceipt());
-			//statement.setInt(++statementIndex, reimbursement.getRequester().getId());
 			statement.setTimestamp(++statementIndex, Timestamp.valueOf(LocalDateTime.now()));
-			//change to get logged user id.
+			
 			statement.setInt(++statementIndex, reimbursement.getApprover().getId());
 
-			//change to enum/static of status value
 			statement.setInt(++statementIndex, reimbursement.getStatus().getId());
-			//statement.setInt(++statementIndex, reimbursement.getType().getId());
+			
+			statement.setInt(++statementIndex, reimbursement.getId());
+			
 			logger.trace("parameters for update of account set");
-			//System.out.println(statement.toString());
 
 
-			if(statement.executeUpdate() > 0){
-				logger.trace("account updated succefully");
+			if(statement.executeUpdate() != 0){
+				logger.trace("Reimbursement updated succefully " + reimbursement);
 				return true;
 			}
 		} catch (SQLException e) {
